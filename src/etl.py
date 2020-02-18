@@ -10,7 +10,7 @@ user_edits = {}
 lineLabels = {}
 lineAuthors = {}
 
-def readFile():
+def readFile(file):
     global user_edits
     global revert_pairs
     global lineLabels
