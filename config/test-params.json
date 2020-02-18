@@ -1,4 +1,4 @@
 {
-  "inpath": "data/sample.txt",
+  "file": "data-test/sample.txt",
   "outdir": "data/test/"
   }
