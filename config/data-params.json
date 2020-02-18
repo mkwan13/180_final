@@ -1,4 +1,4 @@
 {
-  "file": "data/en_wiki_test.txt"
+  "file": "data/en_wiki_test.txt",
   "outdir": "data/"
 }
