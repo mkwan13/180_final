@@ -17,8 +17,8 @@ def load_params(fp):
 def main(targets):
 
 	if 'data-test' in targets:
-        cfg = load_params(TEST_PARAMS)
-        get_data(**cfg)
+        	cfg = load_params(TEST_PARAMS)
+        	get_data(**cfg)
 		
 
     
