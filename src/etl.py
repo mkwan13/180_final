@@ -105,3 +105,26 @@ def calc_m(title):
     score -= max_edit_min
     score *= len(mutual_revert_users)
     return score
+
+
+def get_data(file, outdir, **kwargs):
+	readFile(file)
+	m_scores = {}
+	for title in lineLabels.keys():
+		getMutual(title)
+		if len(lineLabels[title]) <= 1:
+			m = 0
+			m_scores[title] = m
+		else:
+			m = calc_m(title)
+			m_scores[title] = m
+			
+	if not os.path.exists(outdir):
+        os.mkdir(outdir)
+		
+	with open(os.path.join(outdir, 'm_score.csv'), 'w', newline="") as csv_file:  
+    writer = csv.writer(csv_file)
+    for key, value in m_scores.items():
+       writer.writerow([key, value])
+			
+	return
