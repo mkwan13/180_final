@@ -1,4 +1,3 @@
 {
-  "file": "data/en_wiki_test.txt",
-  "outdir": "data/"
+  "file": "./data/en_wiki_test.xml-ptest",
 }
