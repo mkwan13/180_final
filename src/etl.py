@@ -1,5 +1,7 @@
 import sys
 from collections import Counter
+import csv
+import os
 
 revert = 0
 revert_pairs = {}
@@ -17,27 +19,30 @@ def readFile(file):
     global lineAuthors
     global revert
     global edits
-    for ln in open(file, 'r', encoding = 'utf-8'):
-        if not '^^^_' in ln:
-            title = ln.strip()
+for i, parts in enumerate(file):
+        if type(parts) == str:
+            title = parts
             lineLabels[title] = []
             lineAuthors[title] = []
             revert_pairs[title] = []
             continue
-        
-        parts = ln.strip().split(' ')
         if len(parts) < 4:
             continue
         if parts[3] not in user_edits:
             user_edits[parts[3]] = 1
         else:
             user_edits[parts[3]] += 1
-            
         if parts[1] == '1':
             revert += 1
             lineLabels[title].append(int(parts[2]))
             lineAuthors[title].append(parts[3])
             continue
+            
+    for i, parts in enumerate(file):
+        if type(parts) == str:
+            title = parts
+            revert_pairs[title] = []
+            continue        
         line = getLine(title, int(parts[2]))
         if line != None:
             revertedU = parts[3]
@@ -47,7 +52,7 @@ def readFile(file):
             pair = revertedU + "~!~" + revertingU
             if pair not in revert_pairs[title]:
                 revert_pairs[title].append(pair)
-				
+                
 def getMutual(title):
     global revert_users
     global mutual_revert_users
@@ -66,14 +71,14 @@ def getMutual(title):
             if parts[1] not in mutual_revert_users[title]:
                 mutual_revert_users[title].append(parts[1])
             if parts[0] not in mutual_revert_users[title]:
-                mutual_revert_users[title].append(parts[0])		
-				
+                mutual_revert_users[title].append(parts[0])     
+                
 def getLine(title, label):
     global lineLabels
     for line, ll in reversed(list(enumerate(lineLabels[title]))):
         if lineLabels[title][line] == label:
-			return line 
-		
+            return line 
+        
 def calc_m(title):
     global revert_pairs
     global user_edits
@@ -107,24 +112,24 @@ def calc_m(title):
     return score
 
 
-def get_data(file, outdir, **kwargs):
-	readFile(file)
-	m_scores = {}
-	for title in lineLabels.keys():
-		getMutual(title)
-		if len(lineLabels[title]) <= 1:
-			m = 0
-			m_scores[title] = m
-		else:
-			m = calc_m(title)
-			m_scores[title] = m
-			
-	if not os.path.exists(outdir):
+def get_data(file):
+    readFile(file)
+    m_scores = {}
+    for title in lineLabels.keys():
+        getMutual(title)
+        if len(lineLabels[title]) <= 1:
+            m = 0
+            m_scores[title] = m
+        else:
+            m = calc_m(title)
+            m_scores[title] = m
+            
+    if not os.path.exists(outdir):
         os.mkdir(outdir)
-		
-	with open(os.path.join(outdir, 'm_score.csv'), 'w', newline="") as csv_file:  
-    writer = csv.writer(csv_file)
-    for key, value in m_scores.items():
-       writer.writerow([key, value])
-			
-	return
+        
+    with open(os.path.join(outdir, 'm_score.csv'), 'w', newline="") as csv_file:  
+        writer = csv.writer(csv_file)
+        for key, value in m_scores.items():
+            writer.writerow([key, value])
+            
+    return
